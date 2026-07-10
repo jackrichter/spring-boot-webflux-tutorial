@@ -7,6 +7,7 @@ import net.javaguides.mapper.EmployeeMapper;
 import net.javaguides.repository.EmployeeRepository;
 import net.javaguides.service.EmployeeService;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -28,5 +29,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         Mono<Employee> savedEmployee = employeeRepository.findById(employeeId);
         return savedEmployee
                 .map(entity -> EmployeeMapper.mapToEmployeeDto(entity));
+    }
+
+    @Override
+    public Flux<EmployeeDto> getAllEmployees() {
+        Flux<Employee> employeeFlux = employeeRepository.findAll();
+        return employeeFlux
+                .map(entity -> EmployeeMapper.mapToEmployeeDto(entity))
+                .switchIfEmpty(Flux.empty());       // if no employee found, return empty Flux
     }
 }
