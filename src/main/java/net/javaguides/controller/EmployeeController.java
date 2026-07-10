@@ -40,4 +40,11 @@ public class EmployeeController {
                                             @PathVariable("id") String employeeId) {
         return employeeService.updateEmployee(employeeDto, employeeId);
     }
+
+    // Reactive Delete Employee REST API
+    @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public Mono<Void> deleteEmployee(@PathVariable("id") String employeeId) {
+        return employeeService.deleteEmployee(employeeId);
+    }
 }
