@@ -1,4 +1,4 @@
-package net.javaguides;
+package net.javaguides.springboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

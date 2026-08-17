@@ -1,11 +1,11 @@
-package net.javaguides.service.impl;
+package net.javaguides.springboot.service.impl;
 
 import lombok.AllArgsConstructor;
-import net.javaguides.dto.EmployeeDto;
-import net.javaguides.entity.Employee;
-import net.javaguides.mapper.EmployeeMapper;
-import net.javaguides.repository.EmployeeRepository;
-import net.javaguides.service.EmployeeService;
+import net.javaguides.springboot.dto.EmployeeDto;
+import net.javaguides.springboot.entity.Employee;
+import net.javaguides.springboot.mapper.EmployeeMapper;
+import net.javaguides.springboot.repository.EmployeeRepository;
+import net.javaguides.springboot.service.EmployeeService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

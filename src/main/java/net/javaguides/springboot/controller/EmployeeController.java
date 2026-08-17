@@ -1,8 +1,8 @@
-package net.javaguides.controller;
+package net.javaguides.springboot.controller;
 
 import lombok.AllArgsConstructor;
-import net.javaguides.dto.EmployeeDto;
-import net.javaguides.service.EmployeeService;
+import net.javaguides.springboot.dto.EmployeeDto;
+import net.javaguides.springboot.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;

@@ -1,7 +1,7 @@
-package net.javaguides.mapper;
+package net.javaguides.springboot.mapper;
 
-import net.javaguides.dto.EmployeeDto;
-import net.javaguides.entity.Employee;
+import net.javaguides.springboot.dto.EmployeeDto;
+import net.javaguides.springboot.entity.Employee;
 
 public class EmployeeMapper {
 
