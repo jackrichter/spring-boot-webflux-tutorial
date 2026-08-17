@@ -15,6 +15,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -53,7 +55,35 @@ class EmployeeControllerTest {
         // then - verify the result or the output
         response.expectStatus().isCreated()
                 .expectBody()
-                .consumeWith(System.out::println)
+                .consumeWith(System.out::println)       // Print the response body
+                .jsonPath("$.firstName").isEqualTo(employeeDto.getFirstName())
+                .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
+                .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
+    }
+
+    @Test
+    public void givenEmployeeId_whenGetEmployee_thenReturnEmployeeObject() {
+
+        // given - pre-condition
+        String employeeId = "123";
+
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setFirstName("Ramesh");
+        employeeDto.setLastName("Fadatare");
+        employeeDto.setEmail("ramesh@gmail.com");
+
+        BDDMockito.given(employeeService.getEmployee(employeeId))
+                .willReturn(Mono.just(employeeDto));
+
+        // when - action
+        WebTestClient.ResponseSpec response = webTestClient.get()
+                .uri("/api/employees/{id}", Collections.singletonMap("id", employeeId))
+                .exchange();
+
+        // then - verify the output
+        response.expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)       // Print the response body
                 .jsonPath("$.firstName").isEqualTo(employeeDto.getFirstName())
                 .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
                 .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
