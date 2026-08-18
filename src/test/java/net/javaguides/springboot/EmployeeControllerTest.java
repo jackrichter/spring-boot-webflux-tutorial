@@ -13,9 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,5 +90,40 @@ class EmployeeControllerTest {
                 .jsonPath("$.firstName").isEqualTo(employeeDto.getFirstName())
                 .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
                 .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
+    }
+
+    @Test
+    public void givenListOfEmployees_whenGetAllEmployees_thenReturnListOfEmployees() {
+
+        // given - pre-condition
+        List<EmployeeDto> list = new ArrayList<>();
+
+        EmployeeDto employeeDto1 = new EmployeeDto();
+        employeeDto1.setFirstName("Ramesh");
+        employeeDto1.setLastName("Fadatare");
+        employeeDto1.setEmail("ramesh@gmail.com");
+        list.add(employeeDto1);
+
+        EmployeeDto employeeDto2 = new EmployeeDto();
+        employeeDto2.setFirstName("Tony");
+        employeeDto2.setLastName("Starck");
+        employeeDto2.setEmail("tony@gmail.com");
+        list.add(employeeDto2);
+
+        Flux<EmployeeDto> employeeFlux = Flux.fromIterable(list);
+
+        BDDMockito.given(employeeService.getAllEmployees())
+                .willReturn(employeeFlux);
+
+        // when - action
+        WebTestClient.ResponseSpec response = webTestClient.get()
+                .uri("/api/employees")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
+
+        // then - verify the output of response
+        response.expectStatus().isOk()
+                .expectBodyList(EmployeeDto.class)
+                .consumeWith(System.out::println);
     }
 }
