@@ -126,4 +126,38 @@ class EmployeeControllerTest {
                 .expectBodyList(EmployeeDto.class)
                 .consumeWith(System.out::println);
     }
+
+    @Test
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturnUpdatedEmployee() {
+
+        // given
+        String employeeId = "123";
+
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setFirstName("Ramesh");
+        employeeDto.setLastName("Fadatare");
+        employeeDto.setEmail("ramesh@gmail.com");
+
+        // Mocking the action - updateEmployee
+        BDDMockito.given(employeeService.updateEmployee(
+                ArgumentMatchers.any(EmployeeDto.class),
+                ArgumentMatchers.any(String.class)))
+                .willReturn(Mono.just(employeeDto));
+
+        // when
+        WebTestClient.ResponseSpec response = webTestClient.put()
+                .uri("/api/employees/{id}", Collections.singletonMap("id", employeeId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(employeeDto), EmployeeDto.class)
+                .exchange();
+
+        // then
+        response.expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .jsonPath("$.firstName").isEqualTo(employeeDto.getFirstName())
+                .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
+                .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
+    }
 }
