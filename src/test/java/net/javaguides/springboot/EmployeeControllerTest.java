@@ -160,4 +160,25 @@ class EmployeeControllerTest {
                 .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
                 .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
     }
+
+    @Test
+    public void givenEmployeeId_whenDeleteEmployee_thenReturnNoContent() {
+
+        // given
+        String employeeId = "123";
+        Mono<Void> voidMono = Mono.empty();
+
+        BDDMockito.given(employeeService.deleteEmployee(employeeId))
+                .willReturn(voidMono);
+
+        // when
+        WebTestClient.ResponseSpec response = webTestClient.delete()
+                .uri("/api/employees/{id}", Collections.singletonMap("id", employeeId))
+                .exchange();
+
+        // then
+        response.expectStatus().isNoContent()
+                .expectBody()
+                .consumeWith(System.out::println);
+    }
 }
