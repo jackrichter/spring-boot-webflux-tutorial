@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class EmployeeControllerIntegrationTest {
 
@@ -38,5 +40,29 @@ public class EmployeeControllerIntegrationTest {
                 .jsonPath("$.firstName").isEqualTo(employeeDto.getFirstName())
                 .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
                 .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
+    }
+
+    @Test
+    public void testGetSingleEmployee() {
+
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setFirstName("Meena");
+        employeeDto.setLastName("Fadatare");
+        employeeDto.setEmail("meena@gmail.com");
+
+        // SaveEmployee returns a Mono<EmployeeDto>. To get the EmployeeDto object, we need to call .block() method !!!
+        EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto).block();
+
+        // Call the getEmployee Rest Api
+        webTestClient.get()
+                .uri("/api/employees/{id}", Collections.singletonMap("id", savedEmployee.getId()))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()           // get the response body
+                .consumeWith(System.out::println)
+                .jsonPath("$.id").isEqualTo(savedEmployee.getId())
+                .jsonPath("$.firstName").isEqualTo(savedEmployee.getFirstName())
+                .jsonPath("$.lastName").isEqualTo(savedEmployee.getLastName())
+                .jsonPath("$.email").isEqualTo(savedEmployee.getEmail());
     }
 }
