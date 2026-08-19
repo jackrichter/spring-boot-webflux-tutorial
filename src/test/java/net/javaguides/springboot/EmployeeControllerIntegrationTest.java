@@ -1,7 +1,9 @@
 package net.javaguides.springboot;
 
 import net.javaguides.springboot.dto.EmployeeDto;
+import net.javaguides.springboot.repository.EmployeeRepository;
 import net.javaguides.springboot.service.EmployeeService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +21,18 @@ public class EmployeeControllerIntegrationTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @BeforeEach
+    public void before() {
+        System.out.println("Before Each Test");
+
+        // subscribe() starts that delete operation. Calling deleteAll() alone does not execute anything.
+        // The operation runs only after subscription. But it is safer to call .block()
+        employeeRepository.deleteAll().subscribe();
+    }
 
     @Test
     public void testSaveEmployee() {
