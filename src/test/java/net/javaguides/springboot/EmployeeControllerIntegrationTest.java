@@ -135,4 +135,22 @@ public class EmployeeControllerIntegrationTest {
                 .jsonPath("$.email").isEqualTo(updatedEmployee.getEmail());
 
     }
+
+    @Test
+    public void testDeleteEmployee() {
+
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setFirstName("Ramesh");
+        employeeDto.setLastName("Fadatare");
+        employeeDto.setEmail("ramesh@gmail.com");
+
+        EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto).block();
+
+        webTestClient.delete()
+                .uri("/api/employees/{id}", Collections.singletonMap("id", savedEmployee.getId()))
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody()
+                .consumeWith(System.out::println);
+    }
 }
